@@ -12,9 +12,11 @@ A one-click Chrome extension that scrapes a LinkedIn job post and automatically 
 
 ---
 
-## Demo 
+## Demo
 
-<video src="https://github.com/skat00sh/linkedin-job-saver/raw/main/demo.mp4" controls width="100%"></video>
+[![Watch the demo](https://img.youtube.com/vi/6k7UUdKWBZc/hqdefault.jpg)](https://www.youtube.com/watch?v=6k7UUdKWBZc)
+
+
 
 ---
 
