@@ -1,4 +1,4 @@
-const WEBHOOK_URL = 'YOUR_PRODUCTION_WEBHOOK_URL';
+const WEBHOOK_URL = 'https://devaiventures.app.n8n.cloud/webhook/9b349b81-c3c3-4b63-a0b3-d0a412027621';
 
 document.getElementById('save').addEventListener('click', async () => {
   const status = document.getElementById('status');
@@ -11,6 +11,9 @@ document.getElementById('save').addEventListener('click', async () => {
       target: { tabId: tab.id },
       files: ['content.js']
     });
+
+    // Wait for DOM to settle
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     const response = await chrome.tabs.sendMessage(tab.id, { action: 'scrape' });
 

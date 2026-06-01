@@ -1,21 +1,27 @@
-function scrapeLinkedInJob() {
-  const title = document.querySelector('h1')?.innerText?.trim() || '';
+async function scrapeLinkedInJob() {
+  await new Promise(resolve => setTimeout(resolve, 2000));
 
-  const company = document.querySelector('.topcard__org-name-link')?.innerText?.trim() || '';
+  const text = document.body.innerText;
 
-  const posted_date = document.querySelector('.posted-time-ago__text')?.innerText?.trim() || '';
+  const headerMatch = text.match(/Learning\n\n([^\n]+)\n\n([^\n]+)\n\n([^\n]+)/);
+  const company = headerMatch?.[1]?.trim() || '';
+  const title = headerMatch?.[2]?.trim() || '';
 
-  const content = document.querySelector('.description__text--rich')?.innerText?.trim()
-    || document.querySelector('.core-section-container.description')?.innerText?.trim()
-    || '';
+  const dateMatch = text.match(/((?:Reposted )?[\d]+ (?:hour|day|week|month|year)s? ago|Just now)/i);
+  const posted_date = dateMatch?.[1]?.trim() || '';
+
+  const contentMatch = text.match(/About the job\n([\s\S]+?)(?:\nShow less|$)/);
+  const content = contentMatch?.[1]?.trim() || '';
 
   const url = window.location.href;
 
+  console.log('Scraped:', { title, company, posted_date, contentLength: content.length, url });
   return { title, company, posted_date, content, url };
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'scrape') {
-    sendResponse(scrapeLinkedInJob());
+    scrapeLinkedInJob().then(sendResponse);
+    return true;
   }
 });
