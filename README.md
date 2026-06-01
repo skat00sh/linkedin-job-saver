@@ -14,7 +14,11 @@ A one-click Chrome extension that scrapes a LinkedIn job post and automatically 
 
 ## Demo
 
-[![Watch the demo](https://img.youtube.com/vi/6k7UUdKWBZc/hqdefault.jpg)](https://www.youtube.com/watch?v=6k7UUdKWBZc)
+Click to open the video on YouTube (new tab).
+
+<a href="https://www.youtube.com/watch?v=6k7UUdKWBZc" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.youtube.com/vi/6k7UUdKWBZc/hqdefault.jpg" alt="Watch the demo" />
+</a>
 
 
 
