@@ -3,12 +3,15 @@
   "name": "Save Job to Notion",
   "version": "1.0",
   "description": "Save LinkedIn jobs to Notion with one click",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": [
     "https://www.linkedin.com/*",
     "https://*.app.n8n.cloud/*"
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }

@@ -7,7 +7,7 @@ document.getElementById('save').addEventListener('click', async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-    const results = await chrome.scripting.executeScript({
+    await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ['content.js']
     });
@@ -21,13 +21,17 @@ document.getElementById('save').addEventListener('click', async () => {
 
     status.textContent = 'Sending to Notion...';
 
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response)
+    const result = await chrome.runtime.sendMessage({
+      action: 'sendToWebhook',
+      webhookUrl: WEBHOOK_URL,
+      data: response
     });
 
-    status.textContent = '✅ Job saved to Notion!';
+    if (result.success) {
+      status.textContent = '✅ Job saved to Notion!';
+    } else {
+      status.textContent = '❌ Error: ' + result.error;
+    }
   } catch (err) {
     status.textContent = '❌ Error: ' + err.message;
   }
