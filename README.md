@@ -12,6 +12,12 @@ A one-click Chrome extension that scrapes a LinkedIn job post and automatically 
 
 ---
 
+## Demo 
+
+<video src="https://github.com/skat00sh/linkedin-job-saver/raw/main/demo.mp4" controls width="100%"></video>
+
+---
+
 ## Prerequisites
 
 - [n8n cloud account](https://n8n.io) (free tier works)
