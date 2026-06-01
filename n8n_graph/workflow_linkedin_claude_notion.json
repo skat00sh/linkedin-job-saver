@@ -1,0 +1,211 @@
+{
+  "name": "Job Search Automation 2026",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const raw = $('claude').first().json.content[0].text;\nconst parsed = JSON.parse(raw);\nparsed.url = $('Webhook').first().json.body?.url || '';\nreturn [{ json: parsed }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "1a8ebbcc-9f99-42d2-8e49-7a2c42aeb33f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "YOUR_NOTION_DATABASE_ID",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Company|title",
+              "title": "={{ $json.company }}"
+            },
+            {
+              "key": "CV Match score|number",
+              "numberValue": "={{ $json.cv_match_score }}"
+            },
+            {
+              "key": "Rationale|rich_text",
+              "richText": true,
+              "text": {
+                "text": [
+                  {
+                    "text": "={{ $json.rationale }}",
+                    "annotationUi": {}
+                  }
+                ]
+              }
+            },
+            {
+              "key": "Priority|select",
+              "selectValue": "={{ $json.priority }}"
+            },
+            {
+              "key": "Missing skill|rich_text",
+              "richText": true,
+              "text": {
+                "text": [
+                  {
+                    "text": "={{ $json.missing_skills.toString() }}",
+                    "annotationUi": {}
+                  }
+                ]
+              }
+            },
+            {
+              "key": "Skills Required|rich_text",
+              "richText": true,
+              "text": {
+                "text": [
+                  {
+                    "text": "={{ $json.skills_required.toString() }}",
+                    "annotationUi": {}
+                  }
+                ]
+              }
+            },
+            {
+              "key": "Posted Date|date",
+              "date": "={{ $json.posted_date }}"
+            },
+            {
+              "key": "Job URL|url",
+              "urlValue": "={{ $json.url }}"
+            },
+            {
+              "key": "Position|rich_text",
+              "richText": true,
+              "text": {
+                "text": [
+                  {
+                    "text": "={{ $json.role }}\n",
+                    "annotationUi": {}
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "4fdd3341-1db4-4ff1-b5bd-73dfdbdc9d30",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "YOUR_NOTION_CREDENTIAL_ID",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "42b4de7c-bbcc-48a0-871b-6aaf8d1e52f8",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-opus-4-7",
+          "mode": "list",
+          "cachedResultName": "claude-opus-4-7"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a job application evaluator.\n\nHere is the candidate's CV:\n\n[PASTE YOUR CV HERE]\n\nAnalyze the following LinkedIn job post and return ONLY a valid JSON object, no markdown, no explanation:\n\nJob Post:\nToday's date: {{ $now.toISODate() }}\n\nJob Post Title: {{ $json.body.title }}\nCompany: {{ $json.body.company }}\nJob Post Content: {{ $json.body.content }}\nPosted Date: {{ $json.body.posted_date }}\n\nReturn this exact JSON structure:\n{\n  \"role\": \"\",\n  \"company\": \"\",\n  \"posted_date\": \"\",\n  \"location\": \"\",\n  \"skills_required\": [],\n  \"cv_match_score\": 0,\n  \"missing_skills\": [],\n  \"priority\": \"\",\n  \"rationale\": \"\"\n}\n\nRules:\n- cv_match_score: integer 1-10 based on how well the CV matches the job\n- missing_skills: skills in the job post not present in the CV\n- priority: \"High\" if score >= 7 and posted <= 7 days ago, \"Mid\" if score 4-6 or posted 8-21 days ago, \"Low\" otherwise\n- posted_date: format as YYYY-MM-DD if found, otherwise leave empty\n- Return ONLY the JSON, nothing else"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "dafb1ea9-9884-44bc-a4b3-29ad5f7c2cbe",
+      "name": "claude",
+      "credentials": {
+        "anthropicApi": {
+          "id": "YOUR_ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "claude": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "YOUR_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "id": "YOUR_WORKFLOW_ID",
+  "tags": []
+}
