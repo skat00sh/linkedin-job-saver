@@ -1,18 +1,12 @@
 function scrapeLinkedInJob() {
-  const title = document.querySelector('.job-details-jobs-unified-top-card__job-title h1')?.innerText?.trim()
-    || document.querySelector('h1')?.innerText?.trim()
-    || '';
+  const title = document.querySelector('h1')?.innerText?.trim() || '';
 
-  const company = document.querySelector('.job-details-jobs-unified-top-card__company-name a')?.innerText?.trim()
-    || document.querySelector('.job-details-jobs-unified-top-card__company-name')?.innerText?.trim()
-    || '';
+  const company = document.querySelector('.topcard__org-name-link')?.innerText?.trim() || '';
 
-  const posted_date = document.querySelector('.job-details-jobs-unified-top-card__primary-description-without-tagline span[aria-hidden="false"]')?.innerText?.trim()
-    || document.querySelector('.tvm__text--neutral')?.innerText?.trim()
-    || '';
+  const posted_date = document.querySelector('.posted-time-ago__text')?.innerText?.trim() || '';
 
-  const content = document.querySelector('.jobs-description__content')?.innerText?.trim()
-    || document.querySelector('.jobs-description')?.innerText?.trim()
+  const content = document.querySelector('.description__text--rich')?.innerText?.trim()
+    || document.querySelector('.core-section-container.description')?.innerText?.trim()
     || '';
 
   const url = window.location.href;
